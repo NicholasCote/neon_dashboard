@@ -34,10 +34,10 @@ jobs:
         run: podman push hub.k8s.ucar.edu/ncote/neon-app:${{ steps.date.outputs.date }}
       - name: Update Helm values.yaml
         run: | 
-          sed -i "/neon-app/ c\    image: hub.k8s.ucar.edu/ncote/neon-app:${{ steps.date.outputs.date }}" >> neon-helm/values.yaml
+          sed -i "/neon-app/ c\    image: hub.k8s.ucar.edu/ncote/neon-app:${{ steps.date.outputs.date }}" neon-helm/values.yaml
       - name: Update Helm Chart.yaml
         run: | 
-          sed -i "/appVersion:/ c\appVersion: '${{ steps.date.outputs.date }}'" >> neon-helm/Chart.yaml
+          sed -i "/appVersion:/ c\appVersion: '${{ steps.date.outputs.date }}'" neon-helm/Chart.yaml
       - name: Commit changes to main branch
         run: |
           git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
