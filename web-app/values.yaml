@@ -1,0 +1,14 @@
+replicaCount: 1
+
+webapp:
+  name: negin-neon-test
+  group: negin-neon-test
+  path: /
+  tls:
+    fqdn: negin-neon-test.k8s.ucar.edu
+    secretName: incommon-account-key-neon
+  container: 
+    image: hub.k8s.ucar.edu/ncote/neon-app:2024-3-1
+    port: 5006
+    memory: 4G
+    cpu: 2
