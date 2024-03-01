@@ -1,18 +1,46 @@
-name: Docker Image CI
+# This workflow builds container images and pushes them to the NSF NCAR Harbor Container Repository
+# Set the workflow name
+name: Neon Dashboard Build, Push, & Update
 
+# Define the trigger that starts the action
+# For this workflow the trigger is on a push that changes anything in the configs/jupyter/base-notebook/ path
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  - push
 
+# Define the actions that are going to take place as part of this workflow    
 jobs:
-
-  build:
-
-    runs-on: ubuntu-latest
-
+  # Name the job(s)
+  build-push-neon-cicd:
+    # Define where the job should run in this case it will be run on the latest ubuntu image
+    runs-on: self-hosted
+    # Set the steps to take in order
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --no-cache -tag negin513/neon-app:$(date +%s)
+      # Step 1 is to checkout the github repo used to build the Dockerfile
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      # Get the date to apply to image tag
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      - name: Show /etc/subuid
+        run: cat /etc/subuid
+      - name: Show /etc/subgid
+        run: cat /etc/subgid
+      - name: Build and push image
+        run: buildah build -t hub.k8s.ucar.edu/ncote/neon-app:${{ steps.date.outputs.date }} .
+      - name: Login to Harbor
+        run: podman login hub.k8s.ucar.edu -u ncote -p ${{ secrets.NCOTE_HARBOR_LOGIN  }}
+      - name: Push image to Harbor
+        run: podman push hub.k8s.ucar.edu/ncote/neon-app:${{ steps.date.outputs.date }}
+      - name: Update Helm values.yaml
+        run: | 
+          sed -i "/neon-app/ c\    image: hub.k8s.ucar.edu/ncote/neon-app:${{ steps.date.outputs.date }}" >> neon-helm/values.yaml
+      - name: Update Helm Chart.yaml
+        run: | 
+          sed -i "/appVersion:/ c\appVersion: '${{ steps.date.outputs.date }}'" >> neon-helm/Chart.yaml
+      - name: Commit changes to main branch
+        run: |
+          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config --global user.name "$GITHUB_ACTOR"
+          git commit -a -m "Update Helm chart via GH Actions"
+          git push

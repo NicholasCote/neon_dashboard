@@ -2,92 +2,19 @@
 
 Neon Dashboard is a web-based visualization tool for exploring and analyzing neon data. It was created as part of the research project outlined in the paper (** add link).
 
-There are many ways to run this application on your local machine:
+***The original repository belongs to Negin Sobhani. My fork of this repository, https://github.com/negin513/neon_dashboard, is used to add some GitOps CICD automation and a Helm chart for Kubernetes.***
 
-## 🚀 Easiest Method: How to Clone Docker Image and Start the Bokeh Application from Docker Hub 📦
+## GitOps Automation
 
-To quickly get started with the Neon Dashboard Bokeh application, you can use the easiest method by pulling the pre-built Docker image from Docker Hub. 📦
+GitHub Actions is used to trigger a workflow whenever a push is made to the neon_dashboard/ directory in the main branch of this repository. The workflow is setup to run on a self-hosted runner and will not start without one being connected to the repository. There is a github runner image on the NSF NCAR Harbor Container registry that can be used with the following command. 
 
-Open a terminal or command prompt and run the following command to pull the image:
+`podman run -it --privileged -e REPO=NicholasCote/neon_dashboard -e TOKEN=${GITHUB_TOKEN} hub.k8s.ucar.edu/ncote/github-runner:2024-02-28.00.32`
 
-```bash
-docker pull negin513/neon-app
+```{note}
+A GitHub token needs to be added as an environment variable with the following command `export GITHUB_TOKEN=<your_github_api_token>
 ```
 
-Once the image is pulled successfully, run the Bokeh application in a Docker container with the following command. This will forward the port `8080`, making the application publicly available: 🚀
-
-```bash
-docker run -p 8080:5006 negin513/neon-app
-```
-
-The Bokeh application should now be up and running inside the Docker container. You can access it in your web browser at http://localhost:8080. 🎉🎉🎉
-
-
-## 🚀 How to Run with Container? 🚀
-
-To run Neon Dashboard using Docker container, follow these steps:
-
-1. Make sure you have Docker installed on your system.
-
-2. Clone or download the Neon Dashboard repository from https://github.com/negin513/neon_dashboard.
-    ```
-    git clone https://github.com/negin513/neon_dashboard
-    ```
-
-3. Navigate to the root directory of the cloned/downloaded repository.
-    ```
-    cd neon_dashboard
-    ```
-
-4. Build the Docker image using the provided Dockerfile:
-   ```
-   docker build -t neon-app .
-   ```
-
-5. Once the image is built, run the container with port mapping:
-
-   ```
-   docker run -p 5006:5006 neon-app
-   ```
-
-6. The Neon Dashboard should now be accessible in your web browser at `http://localhost:5006`.
-
-Sure! Here's an additional section on how to run Neon Dashboard without using a Docker container, using Conda for managing the Python environment.
-
-## 🏃 How to Run with Conda (Without Docker Container)? 🏃
-
-To run Neon Dashboard without using a Docker container, you'll need to have Conda and Python installed on your system. Follow these steps:
-
-1. lone or download the Neon Dashboard repository from https://github.com/negin513/neon_dashboard.
-    ```
-    git clone https://github.com/negin513/neon_dashboard
-    ```
-
-2. Create a Conda environment and install the required Python packages:
-   ```
-   conda create -n neon-env python=3.9.6
-   conda activate neon-env
-   pip install -r requirements.txt
-   ```
-
-   The first command creates a new Conda environment named "neon-env". The second command activates the environment. The third command installs Bokeh and its required dependencies, while the fourth command installs any additional Python packages listed in the requirements.txt file.
-
-3. Once the dependencies are installed, navigate to the root directory of the Neon Dashboard repository and activate the `ncar-env` environment:
-```
-   conda activate neon-env
-   cd neon_dashboard
-```
-
-4. Run the Bokeh application:
-   ```
-   bokeh serve --allow-websocket-origin=localhost:5006 neon_dashboard
-   ```
-
-   The `--allow-websocket-origin` flag is used to enable connections from the local host.
-
-5. The Neon Dashboard should now be accessible in your web browser at `http://localhost:5006`.
-
-
+This workflow will build a container image from the repository contents, push the image to the NSF NCAR Harbor Container registry, and update the Helm chart in the repository with the new container image. Argo CD is connected to the repository and checks for changes to the Helm chart every 3 minutes. When it sees the change in the Helm chart it will automatically sync and start using the new image. Changes to the number of replicas, CPU, or memory to use can also be made to the Helm chart and will be updated automatically to help tune performance. 
 
 ## 📄 Citing the Paper 📄
 
