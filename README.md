@@ -8,7 +8,7 @@ Neon Dashboard is a web-based visualization tool for exploring and analyzing neo
 
 GitHub Actions is used to trigger a workflow whenever a push is made to the neon_dashboard/ directory in the main branch of this repository. The workflow is setup to run on a self-hosted runner and will not start without one being connected to the repository. There is a github runner image on the NSF NCAR Harbor Container registry that can be used with the following command. 
 
-`podman run -it --privileged -e REPO=NicholasCote/neon_dashboard -e TOKEN=${GITHUB_TOKEN} hub.k8s.ucar.edu/ncote/github-runner:2024-02-28.00.32`
+`docker run --privileged -e REPO=NicholasCote/neon_dashboard -e TOKEN=${GITHUB_TOKEN} hub.k8s.ucar.edu/ncote/github-runner:2024-02-21.18.05`
 
 ```{note}
 A GitHub token needs to be added as an environment variable with the following command `export GITHUB_TOKEN=<your_github_api_token>
