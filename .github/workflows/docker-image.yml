@@ -5,14 +5,18 @@ name: Neon Dashboard Build, Push, & Update
 # Define the trigger that starts the action
 # For this workflow the trigger is on a push that changes anything in the configs/jupyter/base-notebook/ path
 on:
-  - push
+  push:
+    paths:
+      - neon_dashboard/**
+      - Dockerfile
+      - requirements.txt
 
 # Define the actions that are going to take place as part of this workflow    
 jobs:
   # Name the job(s)
   build-push-neon-cicd:
     # Define where the job should run in this case it will be run on the latest ubuntu image
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     # Set the steps to take in order
     steps:
       # Step 1 is to checkout the github repo used to build the Dockerfile
