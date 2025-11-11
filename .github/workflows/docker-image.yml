@@ -30,7 +30,7 @@ jobs:
       - name: Build and push image
         run: buildah build -t hub.k8s.ucar.edu/ncote/neon-app:${{ steps.date.outputs.date }} .
       - name: Login to Harbor
-        run: podman login hub.k8s.ucar.edu -u ncote -p ${{ secrets.NCOTE_HARBOR_LOGIN  }}
+        run: podman login hub.k8s.ucar.edu -u ncote@ucar.edu -p ${{ secrets.NCOTE_HARBOR_LOGIN  }}
       - name: Push image to Harbor
         run: podman push hub.k8s.ucar.edu/ncote/neon-app:${{ steps.date.outputs.date }}
       - name: Update Helm values.yaml
