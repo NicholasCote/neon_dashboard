@@ -10,6 +10,7 @@ on:
       - neon_dashboard/**
       - Dockerfile
       - requirements.txt
+  workflow_dispatch:
 
 # Define the actions that are going to take place as part of this workflow    
 jobs:
