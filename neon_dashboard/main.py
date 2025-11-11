@@ -94,3 +94,4 @@ if __name__.startswith("bokeh"):
     tabs = Tabs(tabs=[tab_1, tab_2])
 
     curdoc().add_root(tabs)
+    curdoc().title = "NEON Dashboard"
