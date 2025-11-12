@@ -6,6 +6,7 @@ webapp:
   path: /
   tls:
     fqdn: negin-neon-test.k8s.ucar.edu
+    fqdn2: ncar-neon-viz.k8s.ucar.edu
     secretName: incommon-account-key-neon
   container: 
     image: hub.k8s.ucar.edu/ncote/neon-app:2025-11-11.22.36
