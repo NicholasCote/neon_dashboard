@@ -597,6 +597,7 @@ class DielCycle(BaseTab):
             fit_columns=False,
             width=350,
             margin=(0, 0, 0, 55),
+            reorderable=False, 
         )
 
         # -----------------------
