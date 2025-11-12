@@ -9,7 +9,7 @@ webapp:
     fqdn2: ncar-neon-viz.k8s.ucar.edu
     secretName: incommon-account-key-neon
   container: 
-    image: hub.k8s.ucar.edu/ncote/neon-app:2025-11-11.22.36
+    image: hub.k8s.ucar.edu/ncote/neon-app:2025-11-12.17.58
     port: 5006
     memory: 4G
     cpu: 2
